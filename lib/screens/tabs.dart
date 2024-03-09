@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:meals_app/screens/categories.dart';
 import 'package:meals_app/screens/meals.dart';
 import 'package:meals_app/models/meal.dart';
+import 'package:meals_app/widgets/main_drawer.dart';
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
@@ -15,7 +16,7 @@ class TabsScreen extends StatefulWidget {
 class _TabsScreenState extends State<TabsScreen> {
   int _selectedPageIndex = 0;
 
-  final List<Meal> _favoriteMeals = [];
+  final List<Meal> _favoriteMeals = []; //? favorite meals database
 
   void _showInfoMessage(String message) {
     ScaffoldMessenger.of(context).clearSnackBars();
@@ -48,7 +49,14 @@ class _TabsScreenState extends State<TabsScreen> {
     });
   }
 
-  var activePageTitle = "Categories";
+  void _setScreen(String identifier) {
+    if (identifier == "filters") {
+    } else if (identifier == "meals") {
+      Navigator.of(context).pop();
+    }
+  }
+
+  String? activePageTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +69,10 @@ class _TabsScreenState extends State<TabsScreen> {
           onToggleFavorite:
               _toggleMealFavoriteStatus); //? No title here to avoid double scaffold in meals
       activePageTitle = "Your Favorites";
+    } else if (_selectedPageIndex == 0) {
+      activePage =
+          CategoriesScreen(onToggleFavorite: _toggleMealFavoriteStatus);
+      activePageTitle = "Categories";
     }
     // else if (_selectedPageIndex == 2) { //? testing app bar index
     //   activePage = const Text("testing", style: TextStyle(color: Colors.white),);
@@ -68,7 +80,10 @@ class _TabsScreenState extends State<TabsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(activePageTitle),
+        title: Text(activePageTitle!),
+      ),
+      drawer: MainDrawer(
+        onSelectScreen: _setScreen,
       ),
       body: activePage,
       bottomNavigationBar: BottomNavigationBar(

@@ -11,7 +11,7 @@ class CategoriesScreen extends StatelessWidget {
   final void Function(Meal meal) onToggleFavorite;
 
   void _selectCategory(BuildContext context, Category category) {
-    final filteredMeals = dummyMeals
+    final filteredMeals = dummyMeals //? database for food for each categories
         .where(
           (meal) => meal.categories.contains(category.id),
         )
@@ -19,8 +19,11 @@ class CategoriesScreen extends StatelessWidget {
     // Navigator.push(context,route); //? context avaible globally with StatefulWidget, in Stateless it ain't. p.s. Same as below
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (ctx) =>
-            MealsScreen(title: category.title, meals: filteredMeals, onToggleFavorite: onToggleFavorite,),
+        builder: (ctx) => MealsScreen(
+          title: category.title,
+          meals: filteredMeals,
+          onToggleFavorite: onToggleFavorite,
+        ),
       ),
     );
   }

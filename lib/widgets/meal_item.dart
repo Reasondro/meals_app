@@ -20,7 +20,7 @@ class MealItem extends StatelessWidget {
   }
 
   // final void Function() onSelectMeal; //? this could work too
-  final void Function(Meal meal) onSelectMeal; 
+  final void Function(Meal meal) onSelectMeal;
 
   @override
   Widget build(BuildContext context) {
