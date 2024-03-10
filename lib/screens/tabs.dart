@@ -10,7 +10,7 @@ const Map<Filter, bool> kInitialFilters = {
   Filter.glutenFree: false,
   Filter.lactoseFree: false,
   Filter.vegetarian: false,
-  Filter.vegan: false
+  Filter.vegan: true
 };
 
 class TabsScreen extends StatefulWidget {
@@ -69,6 +69,7 @@ class _TabsScreenState extends State<TabsScreen> {
 
     if (identifier == "filters") {
       final result = await Navigator.of(context).push<Map<Filter, bool>>(
+        //? the push type parameter is not required, but it is a good practice to specify which data type we are returning. and what data we are pushing to the popped screen (filters) , but it's actually the reverse that is going on
         //? alternative to push, pushReplacement  will not stack screens but replace
         MaterialPageRoute(
           builder: (ctx) => FiltersScreen(

@@ -17,13 +17,15 @@ class FiltersScreen extends StatefulWidget {
 
 class _FiltersScreenState extends State<FiltersScreen> {
   var _glutenFreeFilterSet =
-      false; //? can't acces variables in state class from widget class, unless using widget inside of method in the class.
+      false; //? can't acces variables in state class from widget class, unless using "widget." keyword inside of method in the class.
   var _lactoseFreeFilterSet = false;
   var _vegetarianFilterSet = false;
-  var _veganFilterSet = false;
+  var _veganFilterSet =
+      false; //? filters variable here are used to store the boolean value from SwitchListTile
 
   @override
   void initState() {
+    //? initialize the filters value from the main file (tabs.dart) to this file filter storage ^^^^^, that is _selectedFilters (tabs.dart) <-> currentFilters (filters.dart)
     super.initState();
     _glutenFreeFilterSet = widget.currentFilters[Filter.glutenFree]!;
     _lactoseFreeFilterSet = widget.currentFilters[Filter.lactoseFree]!;
@@ -49,10 +51,11 @@ class _FiltersScreenState extends State<FiltersScreen> {
       // }),
       body: PopScope(
         canPop:
-            false, //? false if you return/pop manually like code below, other than that, true
+            false, //? false if you return/pop manually like code below, other than that, true (COULD BE WRONG)
         onPopInvoked: (didPop) {
           if (didPop) return;
           Navigator.of(context).pop({
+            //? whenever this screen pops, the screen returns / CHANGE TO BE PRECISE the list of maps (_selectedFilters from tabs.dart)
             Filter.glutenFree: _glutenFreeFilterSet,
             Filter.lactoseFree: _lactoseFreeFilterSet,
             Filter.vegetarian: _vegetarianFilterSet,
