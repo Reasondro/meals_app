@@ -5,10 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meals_app/screens/categories.dart';
 import 'package:meals_app/screens/filters.dart';
 import 'package:meals_app/screens/meals.dart';
-import 'package:meals_app/models/meal.dart';
+// import 'package:meals_app/models/meal.dart'; //? not needed because of favorites_provider
 import 'package:meals_app/widgets/main_drawer.dart';
 import 'package:meals_app/providers/meals_provider.dart';
 import 'package:meals_app/providers/favorites_provider.dart';
+import 'package:meals_app/providers/filters_provider.dart'; //? added because of filters_provider that removed the filters from filters.dart
 
 const Map<Filter, bool> kInitialFilters = {
   Filter.glutenFree: false,
@@ -34,12 +35,12 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
   int _selectedPageIndex = 0;
 
   // final List<Meal> _favoriteMeals = []; //? favorite meals database, UPDATE: REPLACED by favoriteMeals (riverpod method)
-  Map<Filter, bool> _selectedFilters = {
-    Filter.glutenFree: false,
-    Filter.lactoseFree: false,
-    Filter.vegetarian: false,
-    Filter.vegan: false
-  };
+  // Map<Filter, bool> _selectedFilters = { //? not needed anymore, riverpod method
+  //   Filter.glutenFree: false,
+  //   Filter.lactoseFree: false,
+  //   Filter.vegetarian: false,
+  //   Filter.vegan: false
+  // };
 
   // void _showInfoMessage(String message) { //? moved to meals_detail_screen
   //   ScaffoldMessenger.of(context).clearSnackBars();
@@ -76,19 +77,19 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
     Navigator.of(context).pop();
 
     if (identifier == "filters") {
-      final result = await Navigator.of(context).push<Map<Filter, bool>>(
-        //? the push type parameter is not required, but it is a good practice to specify which data type we are returning. and what data we are pushing to the popped screen (filters) , but it's actually the reverse that is going on
-        //? alternative to push, pushReplacement  will not stack screens but replace
+      await Navigator.of(context).push<Map<Filter, bool>>(
+        //* the push type parameter is not required, but it is a good practice to specify which data type we are returning. and what data we are pushing to the popped screen (filters) , but it's actually the reverse that is going on
+        //* alternative to push, pushReplacement  will not stack screens but replace
         MaterialPageRoute(
-          builder: (ctx) => FiltersScreen(
-            currentFilters: _selectedFilters,
-          ),
+          builder: (ctx) => const FiltersScreen(
+              // currentFilters: _selectedFilters, //? removed because riverpod method
+              ),
         ),
       );
-      setState(() {
-        _selectedFilters = result ??
-            kInitialFilters; //? the keyword "??" ensures a default value for a variable that could be null , here being the result variable that is nullable
-      });
+      // setState(() { //? removed because riverpod method
+      //   _selectedFilters = result ??
+      //       kInitialFilters; //* the keyword "??" ensures a default value for a variable that could be null , here being the result variable that is nullable
+      // });
       // print(result); //? this shit is magic wtf
     }
     // else if (identifier == "meals") { //? doesn't needed it anymore because always popping bitch
@@ -101,19 +102,20 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
   @override
   Widget build(BuildContext context) {
     final meals = ref.watch(
-        mealsProvider); //? recommended .watch , the other one read is a 1 time thingy, watch always listen
+        mealsProvider); //* recommended .watch (for data/variables) , the other one read is a 1 time thingy, watch always listen
+    final activeFilters = ref.watch(filtersProvider);
     final availableMeals = meals.where((meal) {
       //? changed dummyMeals with meals (riverpod method)
-      if (_selectedFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
+      if (activeFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
         return false;
       }
-      if (_selectedFilters[Filter.lactoseFree]! && !meal.isLactoseFree) {
+      if (activeFilters[Filter.lactoseFree]! && !meal.isLactoseFree) {
         return false;
       }
-      if (_selectedFilters[Filter.vegetarian]! && !meal.isVegetarian) {
+      if (activeFilters[Filter.vegetarian]! && !meal.isVegetarian) {
         return false;
       }
-      if (_selectedFilters[Filter.vegan]! && !meal.isVegan) {
+      if (activeFilters[Filter.vegan]! && !meal.isVegan) {
         return false;
       }
       return true;

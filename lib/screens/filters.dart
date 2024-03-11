@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // import 'package:meals_app/screens/tabs.dart';
 // import 'package:meals_app/widgets/main_drawer.dart';
+import 'package:meals_app/providers/filters_provider.dart'; //? added because of filters_provider that removed the filters from filters.dart
 
-enum Filter { glutenFree, lactoseFree, vegetarian, vegan }
+// enum Filter { glutenFree, lactoseFree, vegetarian, vegan } //? moved to filters_provider.dart (riverpod method)
 
-class FiltersScreen extends StatefulWidget {
-  const FiltersScreen({super.key, required this.currentFilters});
+class FiltersScreen extends ConsumerStatefulWidget {
+  const FiltersScreen({super.key});
 
-  final Map<Filter, bool> currentFilters;
+  // final Map<Filter, bool> currentFilters; //? removed, not needed after provider/riverpod method (filters_provider.dart)
   @override
-  State<StatefulWidget> createState() {
+  ConsumerState<FiltersScreen> createState() {
     return _FiltersScreenState();
   }
 }
 
-class _FiltersScreenState extends State<FiltersScreen> {
+class _FiltersScreenState extends ConsumerState<FiltersScreen> {
   var _glutenFreeFilterSet =
       false; //? can't acces variables in state class from widget class, unless using "widget." keyword inside of method in the class.
   var _lactoseFreeFilterSet = false;
@@ -27,11 +29,13 @@ class _FiltersScreenState extends State<FiltersScreen> {
   void initState() {
     //? initialize the filters value from the main file (tabs.dart) to this file filter storage ^^^^^, that is _selectedFilters (tabs.dart) <-> currentFilters (filters.dart)
     super.initState();
-    _glutenFreeFilterSet = widget.currentFilters[Filter.glutenFree]!;
-    _lactoseFreeFilterSet = widget.currentFilters[Filter.lactoseFree]!;
-    _vegetarianFilterSet = widget.currentFilters[Filter.vegetarian]!;
-    _veganFilterSet = widget.currentFilters[Filter.vegan]!;
-  }
+    final activeFilters = ref.read(
+        filtersProvider); //* read here not watch(listener) because initState won't run again unless the widget changes
+    _glutenFreeFilterSet = activeFilters[Filter.glutenFree]!;
+    _lactoseFreeFilterSet = activeFilters[Filter.lactoseFree]!;
+    _vegetarianFilterSet = activeFilters[Filter.vegetarian]!;
+    _veganFilterSet = activeFilters[Filter.vegan]!;
+  } //? previously use widget.currentFilters
 
   @override
   Widget build(BuildContext context) {
@@ -51,16 +55,20 @@ class _FiltersScreenState extends State<FiltersScreen> {
       // }),
       body: PopScope(
         canPop:
-            false, //? false if you return/pop manually like code below, other than that, true (COULD BE WRONG)
+            true, //? false if you return/pop manually like code below, other than that, true (COULD BE WRONG)
         onPopInvoked: (didPop) {
-          if (didPop) return;
-          Navigator.of(context).pop({
-            //? whenever this screen pops, the screen returns / CHANGE TO BE PRECISE the list of maps (_selectedFilters from tabs.dart)
-            Filter.glutenFree: _glutenFreeFilterSet,
-            Filter.lactoseFree: _lactoseFreeFilterSet,
-            Filter.vegetarian: _vegetarianFilterSet,
-            Filter.vegan: _veganFilterSet,
-          });
+          if (didPop) {
+            ref.read(filtersProvider.notifier).setFilters({
+              Filter.glutenFree: _glutenFreeFilterSet,
+              Filter.lactoseFree: _lactoseFreeFilterSet,
+              Filter.vegetarian: _vegetarianFilterSet,
+              Filter.vegan: _veganFilterSet,
+            });
+          }
+          return;
+          //* in event handler always use read not watch
+
+          // Navigator.of(context).pop(); //* whenever this screen pops, the screen returns / CHANGE TO BE PRECISE the list of maps (_selectedFilters from tabs.dart)
         },
         child: Column(
           children: [

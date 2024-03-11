@@ -34,22 +34,15 @@ class MealDetailScreen extends ConsumerWidget {
         actions: [
           IconButton(
             onPressed: () {
-              final wasAdded = ref
-                  .read(favoriteMealsProvider.notifier)
+              final bool wasAdded = ref
+                  .read(favoriteMealsProvider
+                      .notifier) //? in a function that is passed as a value to like onPressed, or simmiliar, USE READ not watch
                   .toggleMealFavoriteStatus(meal);
               if (wasAdded) {
-                showInfoMessage("Meal added as a favorite");
+                showInfoMessage("Meal added as a favorite.");
               } else {
                 showInfoMessage("Meal removed.");
               }
-              // ScaffoldMessenger.of(context).clearSnackBars();
-              // ScaffoldMessenger.of(context).showSnackBar(
-              //   SnackBar(
-              //     duration: const Duration(seconds: 4),
-              //     content: Text(
-              //         wasAdded ? "Meal added as a favorite" : " Meal removed."),
-              //   ),
-              // );
             },
             icon: const Icon(Icons.star),
           )

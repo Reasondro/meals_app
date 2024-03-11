@@ -3,7 +3,8 @@ import 'package:meals_app/models/meal.dart';
 
 class FavoriteMealsNotifier extends StateNotifier<List<Meal>> {
   //! Not allowed to edit to edit an existing value in memory, must create a new one
-  FavoriteMealsNotifier() : super([]);
+  FavoriteMealsNotifier()
+      : super([]); //* use of "[]" because the List<Meal> spesification above
 
   bool toggleMealFavoriteStatus(Meal meal) {
     final bool mealsIsFavorite = state.contains(meal);
