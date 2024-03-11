@@ -36,7 +36,7 @@ class _FiltersScreenState extends ConsumerState<FiltersScreen> {
     _vegetarianFilterSet = activeFilters[Filter.vegetarian]!;
     _veganFilterSet = activeFilters[Filter.vegan]!;
   } //? previously use widget.currentFilters
-
+//
   @override
   Widget build(BuildContext context) {
     return Scaffold(
