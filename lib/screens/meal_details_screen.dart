@@ -1,26 +1,58 @@
 // meal title at the app bar, below it the meal image
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:meals_app/models/meal.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:meals_app/providers/favorites_provider.dart';
 
-class MealDetailScreen extends StatelessWidget {
-  const MealDetailScreen(
-      {super.key, required this.meal, required this.onToggleFavorite});
+class MealDetailScreen extends ConsumerWidget {
+  //? replaced StatelessWidget with ConsumerWidget (riverpod method)
+  const MealDetailScreen({super.key, required this.meal});
 
   final Meal meal;
-  final void Function(Meal meal) onToggleFavorite;
+  // final void Function(Meal meal) onToggleFavorite; //? removed because of riverpod
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    //? must add WidgetRef for ConsumerWidget build method
+
+    void showInfoMessage(String message) {
+      //? moved from tabs.dart. REMEMBER CONTEXT only avaible in built method for stateless widget
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          duration: const Duration(seconds: 4),
+          content: Text(message),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         actions: [
           IconButton(
-              onPressed: () {
-                onToggleFavorite(meal);
-              },
-              icon: const Icon(Icons.star))
+            onPressed: () {
+              final wasAdded = ref
+                  .read(favoriteMealsProvider.notifier)
+                  .toggleMealFavoriteStatus(meal);
+              if (wasAdded) {
+                showInfoMessage("Meal added as a favorite");
+              } else {
+                showInfoMessage("Meal removed.");
+              }
+              // ScaffoldMessenger.of(context).clearSnackBars();
+              // ScaffoldMessenger.of(context).showSnackBar(
+              //   SnackBar(
+              //     duration: const Duration(seconds: 4),
+              //     content: Text(
+              //         wasAdded ? "Meal added as a favorite" : " Meal removed."),
+              //   ),
+              // );
+            },
+            icon: const Icon(Icons.star),
+          )
         ],
         title: Text(meal.title),
       ),

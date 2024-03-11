@@ -8,6 +8,7 @@ import 'package:meals_app/screens/meals.dart';
 import 'package:meals_app/models/meal.dart';
 import 'package:meals_app/widgets/main_drawer.dart';
 import 'package:meals_app/providers/meals_provider.dart';
+import 'package:meals_app/providers/favorites_provider.dart';
 
 const Map<Filter, bool> kInitialFilters = {
   Filter.glutenFree: false,
@@ -32,7 +33,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
   //? replaced State with ConsumerState (riverpod method)
   int _selectedPageIndex = 0;
 
-  final List<Meal> _favoriteMeals = []; //? favorite meals database
+  // final List<Meal> _favoriteMeals = []; //? favorite meals database, UPDATE: REPLACED by favoriteMeals (riverpod method)
   Map<Filter, bool> _selectedFilters = {
     Filter.glutenFree: false,
     Filter.lactoseFree: false,
@@ -40,30 +41,30 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
     Filter.vegan: false
   };
 
-  void _showInfoMessage(String message) {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        duration: const Duration(seconds: 4),
-        content: Text(message),
-      ),
-    );
-  }
+  // void _showInfoMessage(String message) { //? moved to meals_detail_screen
+  //   ScaffoldMessenger.of(context).clearSnackBars();
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       duration: const Duration(seconds: 4),
+  //       content: Text(message),
+  //     ),
+  //   );
+  // }
 
-  void _toggleMealFavoriteStatus(Meal meal) {
-    final bool isExisting = _favoriteMeals.contains(meal);
-    if (isExisting == false) {
-      setState(() {
-        _favoriteMeals.add(meal);
-      });
-      _showInfoMessage(("Marked as favorite!"));
-    } else {
-      setState(() {
-        _favoriteMeals.remove(meal);
-      });
-      _showInfoMessage("Meal is no longer a favorite");
-    }
-  }
+  // void _toggleMealFavoriteStatus(Meal meal) { //? REPLACE BY toggleMealFavoriteStatus (riverpod method)
+  //   final bool isExisting = _favoriteMeals.contains(meal);
+  //   if (isExisting == false) {
+  //     setState(() {
+  //       _favoriteMeals.add(meal);
+  //     });
+  //     _showInfoMessage(("Marked as favorite!"));
+  //   } else {
+  //     setState(() {
+  //       _favoriteMeals.remove(meal);
+  //     });
+  //     _showInfoMessage("Meal is no longer a favorite");
+  //   }
+  // }
 
   void _selectPage(int index) {
     setState(() {
@@ -118,19 +119,21 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
       return true;
     }).toList();
     Widget activePage = CategoriesScreen(
-      onToggleFavorite: _toggleMealFavoriteStatus,
+      // onToggleFavorite: _toggleMealFavoriteStatus, //? removed because of riverpod
       availableMeals: availableMeals,
     );
 
     if (_selectedPageIndex == 1) {
+      //? riverpod automatically extracts the "state" property value from notifier class. hence ref.watch() yields -> List<Meal> *1
+      final favoriteMeals = ref.watch(favoriteMealsProvider);
       activePage = MealsScreen(
-          meals: _favoriteMeals,
-          onToggleFavorite:
-              _toggleMealFavoriteStatus); //? No title here to avoid double scaffold in meals
+        // onToggleFavorite:  _toggleMealFavoriteStatus, //? removed because of riverpod
+        meals: favoriteMeals,
+      ); //? No title here to avoid double scaffold in meals
       activePageTitle = "Your Favorites";
     } else if (_selectedPageIndex == 0) {
       activePage = CategoriesScreen(
-        onToggleFavorite: _toggleMealFavoriteStatus,
+        // onToggleFavorite: _toggleMealFavoriteStatus, //? removed because of riverpod
         availableMeals: availableMeals,
       );
       activePageTitle = "Categories";
