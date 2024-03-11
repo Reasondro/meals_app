@@ -1,6 +1,7 @@
 // meal title at the app bar, below it the meal image
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:meals_app/models/meal.dart';
@@ -16,8 +17,11 @@ class MealDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    //* ref added manualy because ConsumerWidget/Stateless doesn't have a globally avaible ref keyword (same like context)
     //? must add WidgetRef for ConsumerWidget build method
+    final favoriteMeals = ref.watch(favoriteMealsProvider);
 
+    final isFavorite = favoriteMeals.contains(meal);
     void showInfoMessage(String message) {
       //? moved from tabs.dart. REMEMBER CONTEXT only avaible in built method for stateless widget
       ScaffoldMessenger.of(context).clearSnackBars();
@@ -44,7 +48,7 @@ class MealDetailScreen extends ConsumerWidget {
                 showInfoMessage("Meal removed.");
               }
             },
-            icon: const Icon(Icons.star),
+            icon: Icon(isFavorite ? Icons.star : Icons.star_border),
           )
         ],
         title: Text(meal.title),
