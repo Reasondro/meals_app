@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:meals_app/data/dummy_data.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// import 'package:meals_app/data/dummy_data.dart'; //? replaced by provider method
 import 'package:meals_app/screens/categories.dart';
 import 'package:meals_app/screens/filters.dart';
 import 'package:meals_app/screens/meals.dart';
 import 'package:meals_app/models/meal.dart';
 import 'package:meals_app/widgets/main_drawer.dart';
+import 'package:meals_app/providers/meals_provider.dart';
 
 const Map<Filter, bool> kInitialFilters = {
   Filter.glutenFree: false,
@@ -13,16 +16,20 @@ const Map<Filter, bool> kInitialFilters = {
   Filter.vegan: true
 };
 
-class TabsScreen extends StatefulWidget {
+class TabsScreen extends ConsumerStatefulWidget {
+  //? previously StatefulWidget , but replaced with ConsumerStatefulWidget (riverpod method)
   const TabsScreen({super.key});
 
   @override
-  State<TabsScreen> createState() {
+  ConsumerState<TabsScreen> createState() {
+    //? replaced State with ConsumerState (riverpod method)
+
     return _TabsScreenState();
   }
 }
 
-class _TabsScreenState extends State<TabsScreen> {
+class _TabsScreenState extends ConsumerState<TabsScreen> {
+  //? replaced State with ConsumerState (riverpod method)
   int _selectedPageIndex = 0;
 
   final List<Meal> _favoriteMeals = []; //? favorite meals database
@@ -92,7 +99,10 @@ class _TabsScreenState extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final availableMeals = dummyMeals.where((meal) {
+    final meals = ref.watch(
+        mealsProvider); //? recommended .watch , the other one read is a 1 time thingy, watch always listen
+    final availableMeals = meals.where((meal) {
+      //? changed dummyMeals with meals (riverpod method)
       if (_selectedFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
         return false;
       }
