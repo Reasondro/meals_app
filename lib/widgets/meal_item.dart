@@ -38,12 +38,17 @@ class MealItem extends StatelessWidget {
         child: Stack(
           //* stack ignores shape  ^^^^^^^
           children: [
-            FadeInImage(
-              placeholder: MemoryImage(kTransparentImage),
-              image: NetworkImage(meal.imageUrl),
-              fit: BoxFit.cover,
-              height: 200,
-              width: double.infinity,
+            Hero(
+              //* a widget to animate widgets across different widgets or screens typically
+              tag: meal
+                  .id, //* tag must be unique per widget, here meal.id makes sense
+              child: FadeInImage(
+                placeholder: MemoryImage(kTransparentImage),
+                image: NetworkImage(meal.imageUrl),
+                fit: BoxFit.cover,
+                height: 200,
+                width: double.infinity,
+              ),
             ),
             Positioned(
               //* Posisitioned enforced its child the width and height with below parameters
