@@ -10,7 +10,7 @@ class CategoryGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell //?GestureDetector also does widget tappable, but without the visual feedback
+    return InkWell //? GestureDetector also does widget tappable, but without the visual feedback
         (
       onTap: () {
         onSelectCategory();

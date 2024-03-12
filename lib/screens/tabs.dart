@@ -101,7 +101,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
-   //* recommended .watch (for data/variables) , the other one read is a 1 time thingy (onEvent listener), watch always listen
+    //* recommended .watch (for data/variables) , the other one .read is a 1 time thingy (onEvent listener), watch always listen
 
     final availableMeals = ref.watch(filteredMealsProvider);
     Widget activePage = CategoriesScreen(

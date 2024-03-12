@@ -36,7 +36,7 @@ class MealItem extends StatelessWidget {
           onSelectMeal(meal); //? passed here AHAHH WHAT
         },
         child: Stack(
-          //? stack ignores shape  ^^^^^^^
+          //* stack ignores shape  ^^^^^^^
           children: [
             FadeInImage(
               placeholder: MemoryImage(kTransparentImage),
@@ -46,7 +46,7 @@ class MealItem extends StatelessWidget {
               width: double.infinity,
             ),
             Positioned(
-              //? Posisitioned enforced its child the width and height with below parameters
+              //* Posisitioned enforced its child the width and height with below parameters
               bottom: 0,
               left: 0,
               right: 0,

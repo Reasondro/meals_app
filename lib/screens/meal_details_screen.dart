@@ -55,8 +55,8 @@ class MealDetailScreen extends ConsumerWidget {
       ),
       body: SingleChildScrollView(
         child: Column(
-          //? Column with SingleChildScroolview
-          //? or ListView but reminder ListView isn't centered by default, designed to take all
+          //* Column with SingleChildScroolview
+          //* or ListView but reminder ListView isn't centered by default, designed to take all
           // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             FadeInImage(
